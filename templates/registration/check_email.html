@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ s.check_email_title }} — SportNews Live{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto mt-8 bg-white rounded-lg shadow-md border border-gray-100 p-8 text-center">
+    <h1 class="text-xl font-black text-brand-dark mb-3">{{ s.check_email_title }}</h1>
+    <p class="text-gray-600">
+        {{ s.check_email_body }} <span class="font-semibold">{{ email }}</span>.
+        {{ s.check_email_body2 }}
+    </p>
+</div>
+{% endblock %}

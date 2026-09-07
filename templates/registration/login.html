@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{{ s.login }} — SportNews Live{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto mt-8">
+    <div class="bg-white rounded-lg shadow-md border border-gray-100 p-8">
+        <h1 class="text-2xl font-black text-brand-dark mb-1">{{ s.login_title }}</h1>
+        <p class="text-sm text-gray-500 mb-6">{{ s.login_subtitle }}</p>
+
+        {% if form.errors %}
+            <div class="mb-4 rounded-md bg-red-50 border border-red-300 text-red-700 px-4 py-3 text-sm">
+                {{ s.login_error }}
+            </div>
+        {% endif %}
+
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">{{ s.username_label }}</label>
+                <input type="text" name="username" required autofocus
+                       class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-1">{{ s.password_label }}</label>
+                <input type="password" name="password" required
+                       class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-brand">
+            </div>
+            <input type="hidden" name="next" value="{{ next }}">
+            <button type="submit" class="w-full bg-brand text-white font-bold uppercase text-sm py-3 rounded-md hover:bg-blue-800 transition">
+                {{ s.login_button }}
+            </button>
+        </form>
+
+        <p class="text-sm text-gray-500 mt-6 text-center">
+            {{ s.no_account_text }} <a href="{% url 'signup' %}" class="text-brand font-semibold hover:underline">{{ s.create_account_link }}</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

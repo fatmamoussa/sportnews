@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}{{ s.dashboard_title }} — SportNews Live{% endblock %}
+{% block content %}
+
+<div class="flex items-center justify-between mb-8">
+    <div>
+        <h1 class="text-2xl font-black text-brand-dark">{{ s.dashboard_title }}</h1>
+        <p class="text-sm text-gray-500">{{ s.dashboard_welcome }} {{ user.username }} — {{ s.dashboard_welcome_suffix }}</p>
+    </div>
+    <a href="{% url 'articles:create' %}" class="bg-brand text-white font-bold text-sm uppercase px-5 py-2.5 rounded-md hover:bg-blue-800 transition">
+        + {{ s.new_article }}
+    </a>
+</div>
+
+{% if articles %}
+<div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+    <table class="w-full text-sm">
+        <thead class="bg-blue-50 text-left text-xs uppercase text-gray-500">
+            <tr>
+                <th class="px-4 py-3">{{ s.table_title }}</th>
+                <th class="px-4 py-3">{{ s.table_status }}</th>
+                <th class="px-4 py-3">{{ s.table_featured }}</th>
+                <th class="px-4 py-3">{{ s.table_published }}</th>
+                <th class="px-4 py-3 text-right">{{ s.table_actions }}</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100">
+            {% for article in articles %}
+            <tr class="hover:bg-blue-50">
+                <td class="px-4 py-3 font-medium text-gray-900">
+                    <a href="{{ article.get_absolute_url }}" target="_blank" class="hover:text-brand">{{ article.title }}</a>
+                </td>
+                <td class="px-4 py-3">
+                    {% if article.status == "published" %}
+                        <span class="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-1 rounded">{{ s.status_published }}</span>
+                    {% else %}
+                        <span class="inline-block bg-gray-100 text-gray-600 text-xs font-semibold px-2 py-1 rounded">{{ s.status_draft }}</span>
+                    {% endif %}
+                </td>
+                <td class="px-4 py-3">{% if article.is_featured %}⭐{% endif %}</td>
+                <td class="px-4 py-3 text-gray-500">{{ article.published_at|date:"d M Y" }}</td>
+                <td class="px-4 py-3 text-right space-x-2 whitespace-nowrap">
+                    <a href="{% url 'articles:update' article.slug %}" class="text-brand font-semibold hover:underline">{{ s.edit }}</a>
+                    <a href="{% url 'articles:delete' article.slug %}" class="text-gray-400 hover:text-red-600 font-semibold hover:underline">{{ s.delete }}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="text-gray-500">{{ s.no_articles_dashboard }}</p>
+{% endif %}
+
+{% endblock %}

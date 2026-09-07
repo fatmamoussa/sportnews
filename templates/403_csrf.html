@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ s.csrf_error_title }} — SportNews Live{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto mt-8 bg-white rounded-lg shadow-md border border-gray-100 p-8 text-center">
+    <h1 class="text-xl font-black text-brand-dark mb-3">{{ s.csrf_error_title }}</h1>
+    <p class="text-gray-600 mb-6">{{ s.csrf_error_body }}</p>
+    <button onclick="window.location.reload()" class="bg-brand text-white font-bold uppercase text-sm px-6 py-2.5 rounded-md hover:bg-blue-800 transition">
+        {{ s.refresh_button }}
+    </button>
+</div>
+{% endblock %}

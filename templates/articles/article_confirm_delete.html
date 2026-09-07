@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Supprimer l'article — SportNews Live{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto bg-white rounded-lg shadow-sm border border-gray-100 p-8 text-center">
+    <h1 class="text-xl font-black text-brand-dark mb-2">Supprimer cet article ?</h1>
+    <p class="text-gray-600 mb-6">« {{ article.title }} » sera définitivement supprimé, ainsi que tous ses commentaires. Cette action est irréversible.</p>
+    <form method="post" class="flex justify-center gap-3">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-600 text-white font-bold uppercase text-sm px-6 py-2.5 rounded-md hover:bg-red-700 transition">
+            Oui, supprimer
+        </button>
+        <a href="{% url 'articles:dashboard' %}" class="text-sm text-gray-500 px-4 py-2.5 hover:text-gray-800">Annuler</a>
+    </form>
+</div>
+{% endblock %}

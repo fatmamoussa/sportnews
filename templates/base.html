@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="{{ site_lang }}" dir="{{ site_dir }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SportNews Live{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { DEFAULT: '#2563EB', dark: '#1E3A8A' }
+                    },
+                    fontFamily: {
+                        sans: ['Helvetica Neue', 'Arial', 'Tahoma', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-white text-gray-900 font-sans min-h-screen flex flex-col">
+
+    <!-- Top bar -->
+    <div class="bg-brand-dark text-white text-xs">
+        <div class="max-w-7xl mx-auto px-4 py-1.5 flex justify-between items-center">
+            <span>{{ s.edition_live }}</span>
+            <div class="flex items-center gap-4">
+                <span class="hidden sm:inline">{{ s.continuous_news }}</span>
+                <div class="flex items-center gap-2">
+                    {% for code, label in available_languages %}
+                        <a href="{% url 'articles:set_language' code %}"
+                           class="px-1.5 py-0.5 rounded {% if site_lang == code %}bg-white text-brand-dark font-bold{% else %}text-gray-300 hover:text-white{% endif %}">
+                            {{ label }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white border-b-4 border-brand sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="{% url 'articles:list' %}" class="flex items-center gap-2">
+                <span class="bg-brand text-white font-black text-xl px-2 py-1 tracking-tight">{{ s.site_name_1 }}</span>
+                <span class="font-black text-xl tracking-tight text-brand-dark">{{ s.site_name_2 }} <span class="text-brand">{{ s.site_name_3 }}</span></span>
+            </a>
+            <form method="get" action="{% url 'articles:list' %}" class="hidden md:flex flex-1 max-w-xs mx-6">
+                <input type="text" name="q" value="{{ request.GET.q }}" placeholder="{{ s.search_placeholder }}"
+                       class="w-full border border-gray-300 rounded-l-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand">
+                <button type="submit" class="bg-brand text-white px-3 rounded-r-md text-sm font-semibold">{{ s.search_button }}</button>
+            </form>
+            <nav class="flex items-center gap-3 text-sm font-semibold uppercase tracking-wide">
+                <span class="bg-brand text-white px-3 py-1.5 rounded-sm">{{ s.sport_label }}</span>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'articles:dashboard' %}" class="text-brand-dark hover:text-brand hidden sm:inline">{{ s.dashboard }}</a>
+                    <form method="post" action="{% url 'logout' %}" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-gray-400 hover:text-brand normal-case font-normal">{{ s.logout }}</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-gray-400 hover:text-brand normal-case font-normal">{{ s.login }}</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <!-- Breaking / ticker -->
+    <div class="bg-brand-dark text-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 py-2 flex items-center gap-3">
+            <span class="bg-brand text-xs font-black uppercase px-2 py-0.5 rounded-sm shrink-0">{{ s.direct }}</span>
+            <span class="text-xs sm:text-sm text-gray-200 truncate">{{ s.ticker_text }}</span>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-1 w-full">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-6 rounded-md bg-blue-50 border border-blue-300 text-blue-800 px-4 py-3 text-sm">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-brand-dark text-gray-300 mt-16">
+        <div class="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 sm:grid-cols-3 gap-8">
+            <div>
+                <span class="bg-brand text-white font-black text-lg px-2 py-1">{{ s.site_name_1 }}</span>
+                <span class="font-black text-lg text-white">{{ s.site_name_2 }} {{ s.site_name_3 }}</span>
+                <p class="mt-3 text-sm text-gray-400">{{ s.footer_tagline }}</p>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-3 text-sm uppercase tracking-wide">{{ s.footer_rubric_title }}</h4>
+                <ul class="text-sm space-y-1 text-gray-400">
+                    <li>{{ s.footer_category }}</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-semibold mb-3 text-sm uppercase tracking-wide">SportNews Live</h4>
+                <p class="text-sm text-gray-400">&copy; {% now "Y" %} SportNews Live. {{ s.footer_rights }}</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
