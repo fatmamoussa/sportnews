@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}{{ s.error_404_title }} — SportNews Live{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto mt-8 bg-white rounded-lg shadow-md border border-gray-100 p-8 text-center">
+    <p class="text-6xl font-black text-brand mb-2">404</p>
+    <h1 class="text-xl font-black text-brand-dark mb-3">{{ s.error_404_title }}</h1>
+    <p class="text-gray-600 mb-6">{{ s.error_404_body }}</p>
+    <a href="{% url 'articles:list' %}" class="inline-block bg-brand text-white font-bold uppercase text-sm px-6 py-2.5 rounded-md hover:bg-blue-800 transition">
+        {{ s.back_home_button }}
+    </a>
+</div>
+{% endblock %}

@@ -90,6 +90,15 @@ STRINGS = {
         "csrf_error_title": "Votre session a expiré",
         "csrf_error_body": "Vous êtes resté trop longtemps sur cette page. Actualisez simplement la page et réessayez.",
         "refresh_button": "Actualiser la page",
+
+        # Autres pages d'erreur
+        "error_404_title": "Page introuvable",
+        "error_404_body": "La page que vous cherchez n'existe pas ou a été déplacée.",
+        "error_403_title": "Accès refusé",
+        "error_403_body": "Vous n'avez pas la permission d'accéder à cette page.",
+        "error_400_title": "Requête invalide",
+        "error_400_body": "Votre navigateur a envoyé une requête que le serveur n'a pas pu comprendre.",
+        "back_home_button": "Retour à l'accueil",
     },
     "ar": {
         # Header / nav
@@ -182,6 +191,15 @@ STRINGS = {
         "csrf_error_title": "انتهت صلاحية جلستك",
         "csrf_error_body": "لقد بقيت وقتًا طويلاً على هذه الصفحة. قم بتحديث الصفحة وحاول مرة أخرى.",
         "refresh_button": "تحديث الصفحة",
+
+        # Autres pages d'erreur
+        "error_404_title": "الصفحة غير موجودة",
+        "error_404_body": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+        "error_403_title": "الوصول مرفوض",
+        "error_403_body": "ليس لديك إذن للوصول إلى هذه الصفحة.",
+        "error_400_title": "طلب غير صالح",
+        "error_400_body": "أرسل متصفحك طلبًا لم يتمكن الخادم من فهمه.",
+        "back_home_button": "العودة إلى الصفحة الرئيسية",
     },
 }
 
