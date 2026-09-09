@@ -28,7 +28,11 @@
             {% for article in articles %}
             <tr class="hover:bg-blue-50">
                 <td class="px-4 py-3 font-medium text-gray-900">
-                    <a href="{{ article.get_absolute_url }}" target="_blank" class="hover:text-brand">{{ article.title }}</a>
+                    {% if article.slug %}
+                        <a href="{{ article.get_absolute_url }}" target="_blank" class="hover:text-brand">{{ article.title|default:"(sans titre)" }}</a>
+                    {% else %}
+                        <span class="text-gray-400 italic">{{ article.title|default:"(sans titre)" }}</span>
+                    {% endif %}
                 </td>
                 <td class="px-4 py-3">
                     {% if article.status == "published" %}
@@ -40,8 +44,12 @@
                 <td class="px-4 py-3">{% if article.is_featured %}⭐{% endif %}</td>
                 <td class="px-4 py-3 text-gray-500">{{ article.published_at|date:"d M Y" }}</td>
                 <td class="px-4 py-3 text-right space-x-2 whitespace-nowrap">
-                    <a href="{% url 'articles:update' article.slug %}" class="text-brand font-semibold hover:underline">{{ s.edit }}</a>
-                    <a href="{% url 'articles:delete' article.slug %}" class="text-gray-400 hover:text-red-600 font-semibold hover:underline">{{ s.delete }}</a>
+                    {% if article.slug %}
+                        <a href="{% url 'articles:update' article.slug %}" class="text-brand font-semibold hover:underline">{{ s.edit }}</a>
+                        <a href="{% url 'articles:delete' article.slug %}" class="text-gray-400 hover:text-red-600 font-semibold hover:underline">{{ s.delete }}</a>
+                    {% else %}
+                        <span class="text-gray-300 italic text-xs">{{ s.delete }} indisponible (slug vide)</span>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}

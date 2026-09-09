@@ -2,6 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 from django.utils import timezone
+import uuid
 
 
 class Article(models.Model):
@@ -46,7 +47,11 @@ class Article(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            base_slug = slugify(self.title)[:250]
+            base_slug = slugify(self.title, allow_unicode=True)[:250]
+            if not base_slug:
+                # Filet de sécurité : titre sans aucun caractère "sluggable"
+                # (que des emojis/symboles, etc.)
+                base_slug = f"article-{uuid.uuid4().hex[:8]}"
             slug = base_slug
             i = 1
             while Article.objects.filter(slug=slug).exclude(pk=self.pk).exists():
