@@ -24,7 +24,7 @@ def is_author(user):
 
 
 def article_list(request):
-    articles_qs = Article.objects.filter(status="published")
+    articles_qs = Article.objects.filter(status="published").exclude(slug="")
 
     query = request.GET.get("q", "").strip()
     if query:
@@ -71,7 +71,7 @@ def article_detail(request, slug):
 
     related = Article.objects.filter(
         status="published", category=article.category
-    ).exclude(pk=article.pk)[:3]
+    ).exclude(pk=article.pk).exclude(slug="")[:3]
 
     context = {
         "article": article,
@@ -110,7 +110,24 @@ def _send_confirmation_email(request, user):
         f"Si vous n'êtes pas à l'origine de cette inscription, ignorez cet email."
     )
 
-    if settings.RESEND_API_KEY:
+    if settings.MAILJET_API_KEY and settings.MAILJET_API_SECRET:
+        from mailjet_rest import Client
+        mailjet = Client(auth=(settings.MAILJET_API_KEY, settings.MAILJET_API_SECRET), version="v3.1")
+        data = {
+            "Messages": [{
+                "From": {
+                    "Email": settings.MAILJET_FROM_EMAIL,
+                    "Name": settings.MAILJET_FROM_NAME,
+                },
+                "To": [{"Email": user.email}],
+                "Subject": subject,
+                "TextPart": message,
+            }]
+        }
+        result = mailjet.send.create(data=data)
+        if result.status_code != 200:
+            raise Exception(f"Mailjet a refusé l'envoi : {result.status_code} — {result.json()}")
+    elif settings.RESEND_API_KEY:
         import resend
         resend.api_key = settings.RESEND_API_KEY
         resend.Emails.send({
