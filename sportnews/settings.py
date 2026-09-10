@@ -139,6 +139,12 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="no-reply@sportnewsliv
 RESEND_API_KEY = config("RESEND_API_KEY", default="")
 RESEND_FROM_EMAIL = config("RESEND_FROM_EMAIL", default="onboarding@resend.dev")
 
+# --- Mailjet (autre service d'envoi d'email par API) ---
+MAILJET_API_KEY = config("MAILJET_API_KEY", default="")
+MAILJET_API_SECRET = config("MAILJET_API_SECRET", default="")
+MAILJET_FROM_EMAIL = config("MAILJET_FROM_EMAIL", default="")
+MAILJET_FROM_NAME = config("MAILJET_FROM_NAME", default="SportNews Live")
+
 # Securite en production
 if not DEBUG:
     SECURE_SSL_REDIRECT = config("SECURE_SSL_REDIRECT", default=True, cast=bool)
