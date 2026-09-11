@@ -7,5 +7,26 @@
         {{ s.check_email_body }} <span class="font-semibold">{{ email }}</span>.
         {{ s.check_email_body2 }}
     </p>
+    <p id="email-status" class="text-sm text-gray-500 mt-4">Envoi en cours...</p>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  (function () {
+    emailjs.init("gB0MTPf-maK-tnhhn"); // Public Key EmailJS
+
+    emailjs.send("service_gxi3317", "template_r9ovp9p", {
+      to_email: "{{ email }}",
+      to_name: "{{ username }}",
+      verification_link: "{{ confirm_url }}"
+    }).then(function () {
+      document.getElementById("email-status").innerText =
+        "Email envoyé ! Vérifiez votre boîte de réception (et vos spams).";
+    }, function (error) {
+      document.getElementById("email-status").innerText =
+        "Erreur lors de l'envoi. Réessaie ou contacte-nous.";
+      console.error("EmailJS error:", error);
+    });
+  })();
+</script>
 {% endblock %}

@@ -89,55 +89,24 @@ def signup(request):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            _send_confirmation_email(request, user)
-            return render(request, "registration/check_email.html", {"email": user.email})
+            user.is_active = False  # reste inactif tant que l'email n'est pas confirmé
+            user.save()
+            confirm_url = _build_confirm_url(request, user)
+            return render(request, "registration/check_email.html", {
+                "email": user.email,
+                "username": user.username,
+                "confirm_url": confirm_url,
+            })
     else:
         form = SignUpForm()
     return render(request, "registration/signup.html", {"form": form})
 
 
-def _send_confirmation_email(request, user):
+def _build_confirm_url(request, user):
     uid = urlsafe_base64_encode(force_bytes(user.pk))
     token = default_token_generator.make_token(user)
     confirm_path = reverse("confirm_email", kwargs={"uidb64": uid, "token": token})
-    confirm_url = request.build_absolute_uri(confirm_path)
-
-    subject = "Confirmez votre compte SportNews Live"
-    message = (
-        f"Bonjour {user.username},\n\n"
-        f"Cliquez sur ce lien pour confirmer votre email et activer votre compte :\n"
-        f"{confirm_url}\n\n"
-        f"Si vous n'êtes pas à l'origine de cette inscription, ignorez cet email."
-    )
-
-    if settings.MAILJET_API_KEY and settings.MAILJET_API_SECRET:
-        from mailjet_rest import Client
-        mailjet = Client(auth=(settings.MAILJET_API_KEY, settings.MAILJET_API_SECRET), version="v3.1")
-        data = {
-            "Messages": [{
-                "From": {
-                    "Email": settings.MAILJET_FROM_EMAIL,
-                    "Name": settings.MAILJET_FROM_NAME,
-                },
-                "To": [{"Email": user.email}],
-                "Subject": subject,
-                "TextPart": message,
-            }]
-        }
-        result = mailjet.send.create(data=data)
-        if result.status_code != 200:
-            raise Exception(f"Mailjet a refusé l'envoi : {result.status_code} — {result.json()}")
-    elif settings.RESEND_API_KEY:
-        import resend
-        resend.api_key = settings.RESEND_API_KEY
-        resend.Emails.send({
-            "from": settings.RESEND_FROM_EMAIL,
-            "to": [user.email],
-            "subject": subject,
-            "text": message,
-        })
-    else:
-        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
+    return request.build_absolute_uri(confirm_path)
 
 
 def confirm_email(request, uidb64, token):
@@ -214,7 +183,6 @@ def _can_manage_comment(request, comment):
 
 def comment_edit(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-    # Seul le titulaire du compte auteur du commentaire peut le modifier (pas le journaliste)
     if not (request.user.is_authenticated and comment.user_id == request.user.id):
         messages.error(request, "Vous ne pouvez modifier que vos propres commentaires.")
         return redirect(comment.article.get_absolute_url())
