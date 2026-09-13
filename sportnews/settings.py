@@ -92,8 +92,6 @@ USE_TZ = True
 # --- Fichiers statiques ---
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
 # --- Medias (images / videos) via Cloudinary (stockage persistant gratuit) ---
 USE_CLOUDINARY = config("USE_CLOUDINARY", default=False, cast=bool)
 
@@ -103,11 +101,26 @@ if USE_CLOUDINARY:
         "API_KEY": config("CLOUDINARY_API_KEY", default=""),
         "API_SECRET": config("CLOUDINARY_API_SECRET", default=""),
     }
-    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
     MEDIA_URL = "/media/"
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 else:
     MEDIA_URL = "/media/"
     MEDIA_ROOT = BASE_DIR / "media"
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
